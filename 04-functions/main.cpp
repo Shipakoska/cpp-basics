@@ -15,12 +15,12 @@ void PrintTable()
 }
 
 
-void Calculations(double Eps, double F, double n, double Xbegin, const int max_iter)
+void Calculations(double eps, double f, double n, double xb, const int max_iter)
 {
-	double Fi = 1;
-	while (abs(Fi) > Eps) {
-		F = F + Fi;
-		Fi = pow((-1), n)*((pow(Xbegin, n)) / (tgamma(n + 1)));
+	double fi = 1;
+	while (abs(fi) > eps) {
+		f = f + fi;
+		fi = pow((-1), n)*((pow(xb, n)) / (tgamma(n + 1)));
 		n++;
 		if (n > max_iter) {
 			break;
@@ -29,17 +29,17 @@ void Calculations(double Eps, double F, double n, double Xbegin, const int max_i
 }
 
 
-void PrintResult(int n, int max_iter, double F, double Xbegin)
+void PrintResult(int n, int max_iter, double f, double xb)
 {
-	cout << "*" << setw(15) << Xbegin;
+	cout << "*" << setw(15) << xb;
 	cout << setw(6) << "*" << setw(15);
 	if (n < max_iter) {
-		cout << F << setw(6) << "*";
+		cout << f << setw(6) << "*";
 	}
 	else {
 		cout << "    One more chance  " << setw(3) << "*";
 	}
-	cout << setw(15) << exp(-Xbegin) << setw(6) << "*";
+	cout << setw(15) << exp(-xb) << setw(6) << "*";
 	cout << setw(6) << n << setw(6) << "*" << endl;
 }
 
@@ -47,29 +47,29 @@ void PrintResult(int n, int max_iter, double F, double Xbegin)
 int main()
 {
 	const int max_iter = 100;
-	double Xbegin, Xend, Eps, dX;
-	double F;
+	double xb, xe, eps, dx;
+	double f;
 	int n;
 
 	cout << "PLease enter Xbegin " << "Xbegin=";
-	cin >> Xbegin;
+	cin >> xb;
 	cout << "PLease enter Xend " << "Xend=";
-	cin >> Xend;
+	cin >> xe;
 	cout << "PLease enter dX " << "dX=";
-	cin >> dX;
+	cin >> dx;
 	cout << "Please enter Eps " << "Eps=";
-	cin >> Eps;
+	cin >> eps;
 
 	PrintTable();
 
 	cout << fixed;
 	cout.precision(9);
 
-	for (Xbegin; Xbegin <= Xend; Xbegin = Xbegin + dX) {
-		F = 0;
+	for (xb; xb <= xe; xb = xb + dx) {
+		f = 0;
 		n = 1;
-		Calculations(Eps, F, n, Xbegin, max_iter);
-		PrintResult(n, max_iter, F, Xbegin);
+		Calculations(eps, f, n, xb, max_iter);
+		PrintResult(n, max_iter, f, xb);
 	}
 
 	cout << string(76, '*') << endl;

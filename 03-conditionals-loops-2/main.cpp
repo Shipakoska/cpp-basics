@@ -7,18 +7,18 @@ using namespace std;
 int main()
 {
 	const int max_iter = 100;
-	double Xbegin, Xend, Eps, dX;
-	double F, Fi;
+	double xb, xe, eps, dx;
+	double f, i;
 	int n;
 
 	cout << "PLease enter Xbegin";
-	cin >> Xbegin;
+	cin >> xb;
 	cout << "PLease enter Xend";
-	cin >> Xend;
+	cin >> xe;
 	cout << "PLease enter dX";
-	cin >> dX;
+	cin >> dx;
 	cout << "Please enter Eps";
-	cin >> Eps;
+	cin >> eps;
 
 	cout << string(76, '*') << endl;
 	cout << "*          X         *";
@@ -29,15 +29,17 @@ int main()
 	cout << fixed;
 	cout.precision(9);
 
-	for (Xbegin; Xbegin <= Xend; Xbegin = Xbegin + dX) {
-		F = 0;
+	for (xb; xb <= xe; xb = xb + dx)
+	{
+		f = 0;
 		n = 1;
-		Fi = 1;
-		cout << "*" << setw(15) << Xbegin;
+		i = 1;
 
-		while (abs(Fi) > Eps) {
-			F = F + Fi;
-			Fi = pow((-1), n)*((pow(Xbegin, n)) / (tgamma(n + 1)));
+		cout << "*" << setw(15) << xb;
+
+		while (abs(i) > eps) {
+			f = f + i;
+			i = pow((-1), n)*((pow(xb, n)) / (tgamma(n + 1)));
 			n++;
 			if (n > max_iter) {
 				break;
@@ -47,14 +49,14 @@ int main()
 		cout << setw(6) << "*" << setw(15);
 
 		if (n < max_iter) {
-			cout << F << setw(6) << "*";
+			cout << f << setw(6) << "*";
 		}
 
 		else {
 			cout << "    One more chance  " << setw(3) << "*";
 		}
 
-		cout << setw(15) << exp(-Xbegin) << setw(6) << "*";
+		cout << setw(15) << exp(-xb) << setw(6) << "*";
 		cout << setw(6) << n << setw(6) << "*" << endl;
 
 	}
