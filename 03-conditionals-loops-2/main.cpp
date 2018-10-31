@@ -7,14 +7,14 @@ using namespace std;
 int main()
 {
 	const int max_iter = 100;
-	double xb, xe, eps, dx;
+	double x_begin, x_end, eps, dx;
 	double f, i;
 	int n;
 
 	cout << "PLease enter Xbegin";
-	cin >> xb;
+	cin >> x_begin;
 	cout << "PLease enter Xend";
-	cin >> xe;
+	cin >> x_end;
 	cout << "PLease enter dX";
 	cin >> dx;
 	cout << "Please enter Eps";
@@ -29,17 +29,17 @@ int main()
 	cout << fixed;
 	cout.precision(9);
 
-	for (xb; xb <= xe; xb = xb + dx)
+	for (x_begin;  x_begin <= x_end;  x_begin = x_begin + dx)
 	{
 		f = 0;
 		n = 1;
 		i = 1;
 
-		cout << "*" << setw(15) << xb;
+		cout << "*" << setw(15) << x_begin;
 
 		while (abs(i) > eps) {
 			f = f + i;
-			i = pow((-1), n)*((pow(xb, n)) / (tgamma(n + 1)));
+			i = pow((-1), n)*((pow(x_begin, n)) / (tgamma(n + 1)));
 			n++;
 			if (n > max_iter) {
 				break;
@@ -56,7 +56,7 @@ int main()
 			cout << "    One more chance  " << setw(3) << "*";
 		}
 
-		cout << setw(15) << exp(-xb) << setw(6) << "*";
+		cout << setw(15) << exp(-x_begin) << setw(6) << "*";
 		cout << setw(6) << n << setw(6) << "*" << endl;
 
 	}
