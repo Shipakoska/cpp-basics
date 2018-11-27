@@ -2,6 +2,7 @@
 #include <cmath>
 #include <fstream>
 #include <string>
+
 using namespace std;
 
 int SumOfRow(int **arr, int i, int n, int k)
@@ -38,37 +39,35 @@ void SortArr(int **arr, int n, int k)
 
 int main()
 {
-	int n = 0, k = 0;
-
-
-	cout << "PLease enter number of rows ";
-	cin >> n;
-	cout << "PLease enter number of colomns ";
-	cin >> k;
-
-
-	int** arr = new int*[n];
-	for (int i = 0; i < n; i++)
-		arr[i] = new int[k];
-
 	cout << "Enter file name ";
 	string file_name;
-	cin.ignore();
 	getline(cin, file_name);
 
 	ifstream fin(file_name);
 	if (!fin.is_open())
 	{
 		cout << "Wrong file name";
+		return 1;
 	}
-	else {
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < k; j++)
-			{
-				fin >> arr[i][j];
-			}
+
+	int n = 0, k = 0;
+
+	fin >> n;
+	fin >> k;
+
+
+	int** arr = new int*[n];
+	for (int i = 0; i < n; i++)
+		arr[i] = new int[k];
+
+
+	 
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < k; j++){
+			fin >> arr[i][j];
 		}
 	}
+	
 
 	for (int i = 0; i < n; i++)
 	{

@@ -5,28 +5,44 @@ using namespace std;
 
 int main()
 {
-	string search_word;
-	cout << "PLease enter word for searching: ";
-	cin >> search_word;
-
 	string file_name;
-	cout << "PLease enter file name: ";
+	cout << "PLease write file name: ";
 	cin >> file_name;
 
-	ifstream fin(file_name.c_str());
-	if (!fin)
-		cout << "Wrong file name" << endl;
-	else
-	{
-		string sentence;
-		while (getline(fin, sentence, '.'))
-		{
-			string s = "";
-			getline(fin, s);
-			if (s.find(search_word, 0) != -1)
-				cout << s << endl;
+	ifstream fin(file_name);
+	if (!fin) {
+		cout << "Can't open file!\n";
+		return 1;
+	}
+
+	string word;
+	cout << "PLease write a word for searching: ";
+	cin >> word;
+
+	string line, sentence = "";
+
+	while (getline(fin, line)) {
+
+		for (size_t i = 0; i < line.length(); i++) {
+
+			sentence += line[i];
+
+			if (line[i] == '.' || line[i] == '!' || line[i] == '?') {
+
+				if (sentence.find(word) != -1) {
+
+					if (sentence[0] == ' ')
+						sentence = sentence.substr(1, sentence.length());
+					cout << sentence << endl;
+				}
+				sentence = "";
+			}
 		}
-		fin.close();
+
+
+		if (sentence != "")
+			sentence += " ";
+
 	}
 	return 0;
 }

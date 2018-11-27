@@ -1,7 +1,14 @@
 #include <iostream>
 #include <cmath>
-#include <cstdlib>
+
+
 using namespace std;
+
+struct AbsMinMaxIndices {
+	int min;
+	int max;
+};
+
 
 double SumOfPositiveElements(double *arr, int n);
 double MultiplicationOfMaxAndMinModulElem(double *arr, int n);
@@ -67,7 +74,7 @@ double  MultiplicationOfMaxAndMinModulElem(double *arr, int n)
 			minabs = arr[i];
 		}
 	}
-	for (int i = minabs + 1; i <= maxabs - 1; i++)
+	for (int i = (int)minabs + 1; i <= maxabs - 1; i++)
 	{
 		p = p * arr[i];
 	}

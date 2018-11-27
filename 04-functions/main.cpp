@@ -2,6 +2,7 @@
 #include <cmath>
 #include <string>
 #include <iomanip>
+
 using namespace std;
 
 void PrintTable()
@@ -15,26 +16,29 @@ void PrintTable()
 }
 
 
-void Calculations(double eps, double f, double n, double x_begin, const int max_iter)
+double Calculations(double x_begin, double eps, int &n, const int max_iter)
 {
-	double fi = 1;
-	while (abs(fi) > eps) {
-		f = f + fi;
-		fi = pow((-1), n)*((pow(x_begin, n)) / (tgamma(n + 1)));
+	n = 1;
+	double nth_term = 1;
+	double func = nth_term;
+	while (abs(nth_term) > eps) {
+		nth_term = pow((-1), n)*((pow(x_begin, n)) / (tgamma(n + 1)));
+		func += nth_term;
 		n++;
-		if (n > max_iter) {
-			break;
-		}
+		if (n > max_iter) break;
 	}
+		return func;
+	
+	
 }
 
 
-void PrintResult(int n, int max_iter, double f, double x_begin)
+void PrintResult(double x_begin, double func, int n, const int max_iter)
 {
 	cout << "*" << setw(15) << x_begin;
 	cout << setw(6) << "*" << setw(15);
 	if (n < max_iter) {
-		cout << f << setw(6) << "*";
+		cout << func << setw(6) << "*";
 	}
 	else {
 		cout << "    One more chance  " << setw(3) << "*";
@@ -46,18 +50,18 @@ void PrintResult(int n, int max_iter, double f, double x_begin)
 
 int main()
 {
-	const int max_iter = 100;
+	const int max_iter = 1000;
 	double x_begin, x_end, eps, dx;
 	double f;
 	int n;
 
-	cout << "PLease enter Xbegin " << "Xbegin=";
+	cout << "PLease enter Xbegin " << "=";
 	cin >> x_begin;
-	cout << "PLease enter Xend " << "Xend=";
+	cout << "PLease enter Xend " << "=";
 	cin >> x_end;
-	cout << "PLease enter dX " << "dX=";
+	cout << "PLease enter dX " << "=";
 	cin >> dx;
-	cout << "Please enter Eps " << "Eps=";
+	cout << "Please enter Eps " << "=";
 	cin >> eps;
 
 	PrintTable();
@@ -68,8 +72,8 @@ int main()
 	for (x_begin; x_begin <= x_end; x_begin = x_begin + dx) {
 		f = 0;
 		n = 1;
-		Calculations(eps, f, n, x_begin, max_iter);
-		PrintResult(n, max_iter, f, x_begin);
+		double func= Calculations(x_begin, eps, n,max_iter);
+		PrintResult(x_begin, func, n, max_iter);
 	}
 
 	cout << string(76, '*') << endl;

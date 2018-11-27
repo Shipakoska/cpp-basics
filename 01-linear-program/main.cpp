@@ -3,7 +3,6 @@
 using namespace std;
 
 int main()
-
 {
 	double a, z1, z2;
 	const double pi = 4 * atan(1);
@@ -22,3 +21,5 @@ int main()
 
 
 	return 0;
+
+}
