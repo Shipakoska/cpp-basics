@@ -1,57 +1,38 @@
 #include "functions.h"
 
-
-
-double SumOfPositiveElements(double *arr, int n)
-{
-	double sum = 0.0;
-	for (int i = 0; i < n; i++)
-	{
-		if (arr[i] > 0)
-		{
-			sum = sum + arr[i];
-		}
-	}
-	return sum;
+void PrintArray(double* arr, const int kArraySize) {
+    cout << "[";
+    for (int i = 0; i < kArraySize; i++)
+        cout << arr[i] << ((i < kArraySize - 1) ? (", ") : ("]"));
 }
 
+double SumPosElem(double* arr, const int kArraySize) {
+    double sum = 0;
+    for (int i = 0; i < kArraySize; i++)
+        if (arr[i] > 0)
+            sum += arr[i];
+    return sum;
+}
 
-double  MultiplicationOfMaxAndMinModulElem(double *arr, int n)
-{
-	double p = 1;
-	double max = 0;
-	double min = 0;
-	for (int i = 0; i < n; i++)
-	{
+AbsMinMaxIndices FindAbsMinMaxIndices(double* arr, const int kArraySize) {
+    int min = 0, max = 0;
+    for (int i = 1; i < kArraySize; i++) {
+        if (abs(arr[i]) < abs(arr[min])) min = i;
+        if (abs(arr[i]) > abs(arr[max])) max = i;
+    }
+    return AbsMinMaxIndices{ min, max };
+}
 
-		if (abs(arr[i]) > max)
-		{
-			max = arr[i];
-		}
-		if (abs(arr[i]) < min)
-		{
-			min = arr[i];
-		}
-	}
-		for (int i = (int)min + 1; i <= max - 1; i++)
-		{
-			p = p * arr[i];
-		}
-		return p;
-	}
+double ProductBetweenMinMax(double* arr, int begin, int end) {
+    double product = 1;
+    for (int i = begin + 1; i < end; i++)
+        product *= arr[i];
+    return product;
+}
 
-
-
-void ChangeArray(double *arr, int n)
-{
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < n - i - 1; j++)
-		{
-			if (arr[j] > arr[j + 1])
-			{
-				double tmp = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp;
-			}
-		}
+void SortArray(double* arr, const int kArraySize) {
+    for (int i = 0; i < kArraySize - 1; i++)
+        for (int j = 0; j < kArraySize - i - 1; j++)
+            if (arr[j] < arr[j + 1])
+                swap(arr[j], arr[j + 1]);
 }

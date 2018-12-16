@@ -1,120 +1,112 @@
 #include <iostream>
-#include <cmath>
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
-int SumOfRow(int **arr, int i, int n, int k)
-{
-	int sum = 0;
-	for (int j = 1; j < k; j += 2)
-	{
-		if (arr[i][j] > 0)
-		{
-			sum += arr[i][j];
-		}
-	}
-	return sum;
+void ReadFile(int** matrix, int num_rows, int num_cols, ifstream& fin);
+void PrintMatrix(int** matrix, int num_rows, int num_cols);
+int CountColumnsWithoutZeroes(int** matrix, int num_rows, int num_cols);
+int ComputeCharacteristic(int* row, int num_cols);
+void SortMatrix(int** matrix, int num_rows, int num_cols);
+
+int main() {
+    ifstream fin("matrix.txt");
+    if (!fin) {
+        cout << "File \"matrix.txt\" not found.\n";
+        return 1;
+    }
+
+    int num_rows = 4;
+    int num_cols = 5;
+
+    int** matrix = new int*[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        matrix[i] = new int[num_cols];
+
+    ReadFile(matrix, num_rows, num_cols, fin);
+    fin.close();
+
+    cout << "Initial matrix:\n";
+    PrintMatrix(matrix, num_rows, num_cols);
+
+    cout << "\nNumber of columns without zeroes: ";
+    cout << CountColumnsWithoutZeroes(matrix, num_rows, num_cols) << endl;
+    cout << endl;
+
+    cout << "Sorted matrix:\n";
+    SortMatrix(matrix, num_rows, num_cols);
+    PrintMatrix(matrix, num_rows, num_cols);
+
+    for (int i = 0; i < num_rows; i++) delete[] matrix[i];
+    delete[] matrix;
+
+    return 0;
 }
 
-void SortArr(int **arr, int n, int k)
-{
-	for (int i = 0; i < n - 1; n--)
-	{
-
-
-		for (int j = i; j < n - 1; j++)
-		{
-			if (SumOfRow(arr, j, n, k) > SumOfRow(arr, j + 1, n, k))
-			{
-				for (int l = 0; l < k; l++)
-					swap(arr[j][l], arr[j + 1][l]);
-			}
-
-		}
-
-	}
+void ReadFile(int** matrix, int num_rows, int num_cols, ifstream& fin) {
+    for (int i = 0; i < num_rows; i++)
+        for (int j = 0; j < num_cols; j++)
+            fin >> matrix[i][j];
 }
 
-int main()
-{
-	cout << "Enter file name ";
-	string file_name;
-	getline(cin, file_name);
+void PrintMatrix(int** matrix, int num_rows, int num_cols) {
+    int* characteristics = new int[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        characteristics[i] = ComputeCharacteristic(matrix[i], num_cols);
 
-	ifstream fin(file_name);
-	if (!fin.is_open())
-	{
-		cout << "Wrong file name";
-		return 1;
-	}
+    cout << string(5 * num_cols + 1, '-') << endl;
+    for (int i = 0; i < num_rows; i++) {
+        cout << "|";
+        for (int j = 0; j < num_cols; j++) {
+            cout << setw(3) << matrix[i][j] << setw(2) << "|";
+        }
+        cout << "  |" << setw(3) << characteristics[i] << "|\n";
+    }
+    cout << string(5 * num_cols + 1, '-') << endl;
 
-	int n = 0, k = 0;
+    delete[] characteristics;
+}
 
-	fin >> n;
-	fin >> k;
+int CountColumnsWithoutZeroes(int** matrix, int num_rows, int num_cols) {
+    int num_cols_wt_zeros = 0;
+    for (int j = 0; j < num_cols; j++) {
+        bool no_zeros = true;
+        for (int i = 0; i < num_rows; i++) {
+            if (matrix[i][j] == 0) {
+                no_zeros = false;
+                break;
+            }
+        }
 
+        if (no_zeros)
+            num_cols_wt_zeros++;
+    }
 
-	int** arr = new int*[n];
-	for (int i = 0; i < n; i++)
-		arr[i] = new int[k];
+    return num_cols_wt_zeros;
+}
 
+int ComputeCharacteristic(int* row, int num_cols) {
+    int characteristic = 0;
+    for (int j = 0; j < num_cols; j++)
+        if ((row[j] > 0) && (row[j] % 2 == 0))
+            characteristic += row[j];
 
-	 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < k; j++){
-			fin >> arr[i][j];
-		}
-	}
-	
+    return characteristic;
+}
 
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < k; j++)
-		{
-			cout << arr[i][j] << "  ";
-		}
-		cout << endl;	
-	}
-	cout << endl;
+void SortMatrix(int** matrix, int num_rows, int num_cols) {
+    int* characteristics = new int[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        characteristics[i] = ComputeCharacteristic(matrix[i], num_cols);
 
+    for (int i = 0; i < num_rows - 1; i++)
+        for (int j = 0; j < num_rows - i - 1; j++)
+            if (characteristics[j] > characteristics[j + 1]) {
+                swap(matrix[j], matrix[j + 1]);
+                swap(characteristics[j], characteristics[j + 1]);
+            }
 
-	int num_of_col;
-	num_of_col = 0;
-
-
-	for (int j = 0; j < k; j++)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			if (arr[i][j] != 0)
-			{
-				if (i + 1 == n)
-					num_of_col++;
-			}
-			else
-				break;
-		}
-	}
-
-
-
-	SortArr(arr, n, k);
-
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < k; j++)
-		{
-			cout << arr[i][j] << "  ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-
-	cout << "Number of colomns not containing zeros = " << num_of_col;
-
-	for (int i = 0; i < k; i++) delete[] arr[i];
-	delete[] arr;
-
+    delete[] characteristics;
 }

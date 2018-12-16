@@ -1,138 +1,152 @@
 #include <iostream>
-#include <cmath>
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
 template <class T>
-T SumOfRow(T **arr, int i, int n, int k)
-{
-	T sum = 0;
-	for (int j = 1; j < k; j += 2)
-	{
-		if (arr[i][j] > 0)
-		{
-			sum += arr[i][j];
-		}
-	}
-	return sum;
+void ReadFile(T** matrix, int num_rows, int num_cols, ifstream& fin);
+
+template <class T>
+void PrintMatrix(T** matrix, int num_rows, int num_cols);
+
+template <class T>
+int CountColumnsWithoutZeroes(T** matrix, int num_rows, int num_cols);
+
+template <class T>
+T ComputeCharacteristic(T* row, int num_cols);
+
+template <class T>
+void SortMatrix(T** matrix, int num_rows, int num_cols);
+
+template <class T>
+bool Execute(string file_name);
+
+int main() {
+    string select;
+error:
+    cout << "Select the data type (0-integer, 1-double, 2-float): ";
+    cin >> select;
+    if (select == "0") {
+        Execute<int>("int.txt");
+    }
+    else if (select == "1") {
+        Execute<double>("double.txt");
+    }
+    else if (select == "2") {
+        Execute<float>("float.txt");
+    }
+    else {
+        cout << "Error input! (Only 0/1/2)\n";
+        goto error;
+    }
+    return 0;
 }
 
 template <class T>
-void SortArr(T **arr, int n, int k)
-{
-	for (int i = 0; i < n - 1; n--)
-	{
+bool Execute(string file_name) {
+    ifstream fin(file_name);
+    if (!fin) {
+        cout << "File \"" << file_name << "\" not found.\n";
+        return 0;
+    }
 
+    int num_rows = 4;
+    int num_cols = 5;
 
-		for (int j = i; j < n - 1; j++)
-		{
-			if (SumOfRow(arr, j, n, k) > SumOfRow(arr, j + 1, n, k))
-			{
-				for (int l = 0; l < k; l++)
-					swap(arr[j][l], arr[j + 1][l]);
-			}
+    T** matrix = new T*[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        matrix[i] = new T[num_cols];
 
-		}
+    ReadFile(matrix, num_rows, num_cols, fin);
+    fin.close();
 
-	}
+    cout << "Initial matrix:\n";
+    PrintMatrix(matrix, num_rows, num_cols);
+
+    cout << "\nNumber of columns without zeroes: ";
+    cout << CountColumnsWithoutZeroes(matrix, num_rows, num_cols) << endl;
+    cout << endl;
+
+    cout << "Sorted matrix:\n";
+    SortMatrix(matrix, num_rows, num_cols);
+    PrintMatrix(matrix, num_rows, num_cols);
+
+    for (int i = 0; i < num_rows; i++) delete[] matrix[i];
+    delete[] matrix;
+
+    return 1;
 }
 
 template <class T>
-int Execute(string file_name) {
-	ifstream fin(file_name);
-	if (!fin.is_open())
-	{
-		cout << "Wrong file name";
-		return 1;
-	}
-
-	int n = 0, k = 0;
-
-	fin >> n;
-	fin >> k;
-
-	T** arr = new T*[n];
-	for (int i = 0; i < n; i++)
-		arr[i] = new T[k];
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < k; j++) {
-			fin >> arr[i][j];
-		}
-	}
-
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < k; j++)
-		{
-			cout << arr[i][j] << "  ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-
-
-	int num_of_col;
-	num_of_col = 0;
-
-
-	for (int j = 0; j < k; j++)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			if (arr[i][j] != 0)
-			{
-				if (i + 1 == n)
-					num_of_col++;
-			}
-			else
-				break;
-		}
-	}
-
-
-
-	SortArr(arr, n, k);
-
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < k; j++)
-		{
-			cout << arr[i][j] << "  ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-
-	cout << "Number of colomns not containing zeros = " << num_of_col;
-	cout << endl;
-
-	for (int i = 0; i < k; i++) delete[] arr[i];
-	delete[] arr;
-	return 0;
+void ReadFile(T** matrix, int num_rows, int num_cols, ifstream& fin) {
+    for (int i = 0; i < num_rows; i++)
+        for (int j = 0; j < num_cols; j++)
+            fin >> matrix[i][j];
 }
 
-int main()
-{
-	while (true) {
-		string type;
-		cout << "Select type(1 - int, 2 - float, 3 - double, exit - to close): ";
-		cin >> type;
+template <class T>
+void PrintMatrix(T** matrix, int num_rows, int num_cols) {
+    T* characteristics = new T[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        characteristics[i] = ComputeCharacteristic(matrix[i], num_cols);
 
-		if (type == "exit") {
-			return 0;
-		}
-		else if (type == "1") {
-			Execute<int>("int.txt");
-		}
-		else if (type == "2") {
-			Execute<float>("float.txt");
-		}
-		else if (type == "3") {
-			Execute<double>("double.txt");
-		}
-	}
+    cout << string(5 * num_cols + 1, '-') << endl;
+    for (int i = 0; i < num_rows; i++) {
+        cout << "|";
+        for (int j = 0; j < num_cols; j++) {
+            cout << setw(3) << matrix[i][j] << setw(2) << "|";
+        }
+        cout << "  |" << setw(3) << characteristics[i] << "|\n";
+    }
+    cout << string(5 * num_cols + 1, '-') << endl;
 
+    delete[] characteristics;
+}
+
+template <class T>
+int CountColumnsWithoutZeroes(T** matrix, int num_rows, int num_cols) {
+    int num_cols_wt_zeros = 0;
+    for (int j = 0; j < num_cols; j++) {
+        bool no_zeros = true;
+        for (int i = 0; i < num_rows; i++) {
+            if (matrix[i][j] == 0) {
+                no_zeros = false;
+                break;
+            }
+        }
+
+        if (no_zeros)
+            num_cols_wt_zeros++;
+    }
+
+    return num_cols_wt_zeros;
+}
+
+template <class T>
+T ComputeCharacteristic(T* row, int num_cols) {
+    T characteristic = 0;
+    for (int j = 0; j < num_cols; j++) {
+        int buf = static_cast<int>(row[j]);
+        if ((row[j] > 0) && (buf % 2 == 0))
+            characteristic += row[j];
+    }
+    return characteristic;
+}
+
+template <class T>
+void SortMatrix(T** matrix, int num_rows, int num_cols) {
+    T* characteristics = new T[num_rows];
+    for (int i = 0; i < num_rows; i++)
+        characteristics[i] = ComputeCharacteristic(matrix[i], num_cols);
+
+    for (int i = 0; i < num_rows - 1; i++)
+        for (int j = 0; j < num_rows - i - 1; j++)
+            if (characteristics[j] > characteristics[j + 1]) {
+                swap(matrix[j], matrix[j + 1]);
+                swap(characteristics[j], characteristics[j + 1]);
+            }
+
+    delete[] characteristics;
 }

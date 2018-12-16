@@ -3,6 +3,13 @@
 
 using namespace std;
 
-double SumOfPositiveElements(double *arr, int n);
-double MultiplicationOfMaxAndMinModulElem(double *arr, int n);
-void ChangeArray(double *arr, int n);
+struct AbsMinMaxIndices {
+    int min;
+    int max;
+};
+
+void PrintArray(double* arr, const int kArraySize);
+double SumPosElem(double* arr, const int kArraySize);
+AbsMinMaxIndices FindAbsMinMaxIndices(double* arr, const int kArraySize);
+double ProductBetweenMinMax(double* arr, int begin, int end);
+void SortArray(double* arr, const int kArraySize);

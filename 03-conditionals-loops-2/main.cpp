@@ -1,67 +1,69 @@
 #include <iostream>
 #include <cmath>
-#include <string>
 #include <iomanip>
+#include <string>
+
 using namespace std;
 
-int main()
-{
-	const int max_iter = 100;
-	double x_begin, x_end, eps, dx;
-	double f, i;
-	int n;
+int main() {
+    const int kMaxIter = 1000;
 
-	cout << "PLease enter Xbegin";
-	cin >> x_begin;
-	cout << "PLease enter Xend";
-	cin >> x_end;
-	cout << "PLease enter dX";
-	cin >> dx;
-	cout << "Please enter Eps";
-	cin >> eps;
+    double eps, xn, xk, dx;
+    cout << "Enter xn: ";
+    cin >> xn;
+    cout << "Enter xk >= xn: ";
+    cin >> xk;
+    cout << "Enter dx > 0 : ";
+    cin >> dx;
+    cout << "Enter EPS > 0: ";
+    cin >> eps;
 
-	cout << string(76, '*') << endl;
-	cout << "*          X         *";
-	cout << "       e^(-X)       *";
-	cout << "         Y          *";
-	cout << " Iterations* " << endl;
-	cout << string(76, '*') << endl;
-	cout << fixed;
-	cout.precision(9);
+    if (dx <= 0) {
+        cout << "\nError dx\n";
+        return 1;
+    }
+    else if (xn > xk) {
+        cout << "\nError xk\n";
+        return 1;
+    }
+    else if (eps <= 0) {
+        cout << "\nError eps\n";
+        return 1;
+    }
 
-	for (x_begin;  x_begin <= x_end;  x_begin = x_begin + dx)
-	{
-		f = 0;
-		n = 1;
-		i = 1;
+    cout << string(72, '-') << endl;
+    cout << "|       x       ";
+    cout << "|   e^(-x) (mine)    ";
+    cout << "|   e^(-x) (cmath)   ";
+    cout << "| iterations |\n";
+    cout << string(72, '-') << endl;
 
-		cout << "*" << setw(15) << x_begin;
+    cout << fixed;
+    cout.precision(9);
 
-		while (abs(i) > eps) {
-			f = f + i;
-			i = pow((-1), n)*((pow(x_begin, n)) / (tgamma(n + 1)));
-			n++;
-			if (n > max_iter) {
-				break;
-			}
-		}
+    for (; xn <= xk; xn += dx) {
 
-		cout << setw(6) << "*" << setw(15);
+        cout << "|" << setw(13) << xn << setw(3);
 
-		if (n < max_iter) {
-			cout << f << setw(6) << "*";
-		}
+        int n = 1;
+        double func = 0, nth_term = 1;
+        while (abs(nth_term) > eps) {
+            func += nth_term;
+            nth_term = pow((-1), n) * ((pow(xn, n)) / (tgamma(n + 1)));
+            n++;
+            if (n > kMaxIter) break;
+        }
 
-		else {
-			cout << "    One more chance  " << setw(3) << "*";
-		}
-
-		cout << setw(15) << exp(-x_begin) << setw(6) << "*";
-		cout << setw(6) << n << setw(6) << "*" << endl;
-
-	}
-
-	cout << string(76, '*') << endl;
-
-	return 0;
+        cout << "|" << setw(15);
+        if (n <= kMaxIter) {
+            cout << func << setw(6) << "|";
+        }
+        else {
+            cout << "   limit exceeded   |";
+        }
+        cout << setw(15) << exp(-xn) << setw(6) << "|";
+        cout << setw(7) << n << setw(7) << "|\n";
+    }
+    cout << string(72, '-') << endl;
+    return 0;
 }

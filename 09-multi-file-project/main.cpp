@@ -1,31 +1,35 @@
 #include "functions.h"
 
-int main()
-{
+int main() {
+    const int kArraySize = 10;
+    double arr[kArraySize] = { 5, 1, -2, 0, -4, .5, 6, -.7, 8, .4 };
 
-	int n = 0;
-	cout << "PLease enter n ";
-	cin >> n;
-	double *arr = new double[n];
+    cout << "Initial array:\n";
+    PrintArray(arr, kArraySize);
+    cout << endl;
 
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Enter " << i + 1 << " element:";
-		cin >> arr[i];
-	}
+    cout << "\nSum of positive elements = ";
+    cout << SumPosElem(arr, kArraySize) << endl;
 
-	cout << "\n Sum of positive elements of the array is : " << SumOfPositiveElements(arr, n) << endl;
+    AbsMinMaxIndices ammi = FindAbsMinMaxIndices(arr, kArraySize);
+    int min_index = ammi.min;
+    int max_index = ammi.max;
+    if (abs(min_index - max_index) > 1) {
+        double product;
+        if (min_index < max_index)
+            product = ProductBetweenMinMax(arr, min_index, max_index);
+        else
+            product = ProductBetweenMinMax(arr, max_index, min_index);
+        cout << "\nProduct of elements between abs min and abs max = ";
+        cout << product << endl;
+    }
+    else
+        cout << "\nNo elements between abs min and abs max.\n";
 
-	cout << "\n Multiplication of the max and min  modulo elements: " << MultiplicationOfMaxAndMinModulElem(arr, n) << endl;
+    SortArray(arr, kArraySize);
+    cout << "\nSorted array:\n";
+    PrintArray(arr, kArraySize);
+    cout << endl;
 
-
-	cout << "\n Change array:" << endl;
-	ChangeArray(arr, n);
-	for (int i = 0; i < n; i++)
-	{
-		cout << " [" << i << "] = ";
-		cout << arr[i] << endl;
-	}
-
-
+    return 0;
 }

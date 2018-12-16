@@ -1,96 +1,86 @@
 #include <iostream>
 #include <cmath>
 
-
 using namespace std;
 
 struct AbsMinMaxIndices {
-	int min;
-	int max;
+    int min;
+    int max;
 };
 
+void PrintArray(double* arr, const int kArraySize);
+double SumPosElem(double* arr, const int kArraySize);
+AbsMinMaxIndices FindAbsMinMaxIndices(double* arr, const int kArraySize);
+double ProductBetweenMinMax(double* arr, int begin, int end);
+void SortArray(double* arr, const int kArraySize);
 
-double SumOfPositiveElements(double *arr, int n);
-double MultiplicationOfMaxAndMinModulElem(double *arr, int n);
-void ChangeArray(double *arr, int n);
+int main() {
+    const int kArraySize = 10;
+    double arr[kArraySize] = { 5, 1, -2, 0, -4, .5, 6, -.7, 8, .4 };
 
+    cout << "Initial array:\n";
+    PrintArray(arr, kArraySize);
+    cout << endl;
 
-int main()
-{
-	int n = 0;
-	cout << "PLease enter n ";
-	cin >> n;
-	double *arr = new double[n];
+    cout << "\nSum of positive elements = ";
+    cout << SumPosElem(arr, kArraySize) << endl;
 
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Enter " << i + 1 << " element:";
-		cin >> arr[i];
-	}
+    AbsMinMaxIndices ammi = FindAbsMinMaxIndices(arr, kArraySize);
+    int min_index = ammi.min;
+    int max_index = ammi.max;
+    if (abs(min_index - max_index) > 1) {
+        double product;
+        if (min_index < max_index)
+            product = ProductBetweenMinMax(arr, min_index, max_index);
+        else
+            product = ProductBetweenMinMax(arr, max_index, min_index);
+        cout << "\nProduct of elements between abs min and abs max = ";
+        cout << product << endl;
+    }
+    else
+        cout << "\nNo elements between abs min and abs max.\n";
 
-	cout << "\n Sum of positive elements of the array is : " << SumOfPositiveElements(arr, n) << endl;
-	cout << "\n Multiplication of the max and min  modulo elements: " << MultiplicationOfMaxAndMinModulElem(arr, n) << endl;
-	cout << "\n Change array:" << endl;
+    SortArray(arr, kArraySize);
+    cout << "\nSorted array:\n";
+    PrintArray(arr, kArraySize);
+    cout << endl;
 
-
-	ChangeArray(arr, n);
-	for (int i = 0; i < n; i++)
-	{
-		cout << " [" << i << "] = ";
-		cout << arr[i] << endl;
-	}
-
-	delete[] arr;
-
-	return 0;
+    return 0;
 }
 
-double SumOfPositiveElements(double *arr, int n)
-{
-	double sum = 0.0;
-	for (int i = 0; i < n; i++)
-	{
-		if (arr[i] > 0)
-		{
-			sum = sum + arr[i];
-		}
-	}
-	return sum;
+void PrintArray(double* arr, const int kArraySize) {
+    cout << "[";
+    for (int i = 0; i < kArraySize; i++)
+        cout << arr[i] << ((i < kArraySize - 1) ? (", ") : ("]"));
 }
 
-double  MultiplicationOfMaxAndMinModulElem(double *arr, int n)
-{
-	double p = 1;
-	double maxabs = 0;
-	double minabs = 0;
-	for (int i = 0; i < n; i++)
-	{
-		if (abs(arr[i]) > maxabs)
-		{
-			maxabs = arr[i];
-		}
-		if (abs(arr[i]) < minabs)
-		{
-			minabs = arr[i];
-		}
-	}
-	for (int i = (int)minabs + 1; i <= maxabs - 1; i++)
-	{
-		p = p * arr[i];
-	}
-	return p;
+double SumPosElem(double* arr, const int kArraySize) {
+    double sum = 0;
+    for (int i = 0; i < kArraySize; i++)
+        if (arr[i] > 0)
+            sum += arr[i];
+    return sum;
 }
 
-void ChangeArray(double *arr, int n)
-{
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < n - i - 1; j++)
-		{
-			if (arr[j] > arr[j + 1])
-			{
-				double tmp = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp;
-			}
-		}
+AbsMinMaxIndices FindAbsMinMaxIndices(double* arr, const int kArraySize) {
+    int min = 0, max = 0;
+    for (int i = 1; i < kArraySize; i++) {
+        if (abs(arr[i]) < abs(arr[min])) min = i;
+        if (abs(arr[i]) > abs(arr[max])) max = i;
+    }
+    return AbsMinMaxIndices{ min, max };
+}
+
+double ProductBetweenMinMax(double* arr, int begin, int end) {
+    double product = 1;
+    for (int i = begin + 1; i < end; i++)
+        product *= arr[i];
+    return product;
+}
+
+void SortArray(double* arr, const int kArraySize) {
+    for (int i = 0; i < kArraySize - 1; i++)
+        for (int j = 0; j < kArraySize - i - 1; j++)
+            if (arr[j] < arr[j + 1])
+                swap(arr[j], arr[j + 1]);
 }
